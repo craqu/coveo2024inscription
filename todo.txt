@@ -1,3 +1,7 @@
 0 - tirer une seule fois sur le meteor
 1 - faire un queue des meteors a tirer selon l'importance
 2 -
+
+small = 7.218419303856996^2 + 8.991183600341358^2 = 11.5
+medium = 8.589866109378148^2 + 2.262909471700044^2 = 8.8
+large = 3.374881070496983^2 + 0.24687135528794765^2 = 3.3

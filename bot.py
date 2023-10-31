@@ -50,7 +50,7 @@ class Bot:
         print(meteorlist)
 
     def get_rotation_angle(self, game_message, curently_shot_meteor):
-        limit_angle = 80
+        limit_angle = 85
         cannon_position = Vector(game_message.cannon.position.x, -game_message.cannon.position.y)
         rocket_speed = game_message.constants.rockets.speed
         meteor_position = Vector(curently_shot_meteor.position.x, -curently_shot_meteor.position.y)
@@ -63,9 +63,28 @@ class Bot:
 
         return rotation_angle
 
+        def predict_virtual_meteor(self, game_message:GameMessage, shooted_meteor:Meteor):
+
+            if shooted_meteor.meteorType == "Large":
+                meteortype = "Medium"
+                nb = 2
+
+            elif shooted_meteor.meteorType == "Medium":
+                meteortype = "Small"
+                nb = 3
+            else:
+                raise Exception
+            for i in range(nb):
+                virt_mets.append()
+            
+            #return Meteor(id,position,velocity,size,meteorType=)
+
     def get_next_move(self, game_message: GameMessage):
         # va chercher le prochain météor le plus petit sur la liste
-        
+        if game_message.tick > 992:
+            print("", file=fileout)
+            print(f" SCORE : {game_message.score}", file=fileout)
+            print("", file=fileout)
         meteors = [x for x in game_message.meteors if x.id not in self.shooted]
         next_meteor = 0
         meteors.sort(key=lambda m: m.meteorType, reverse=True) # prend le plus petit meteor sur le jeux
@@ -96,7 +115,6 @@ class Bot:
         
 
 
-        print(f"rotation angle asked = {rotation_angle}", file=fileout)
         print(game_message.tick, file=fileout)
         print(game_message.meteors, file=fileout)
         print(game_message.rockets, file=fileout)
