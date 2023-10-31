@@ -1,0 +1,3 @@
+0 - tirer une seule fois sur le meteor
+1 - faire un queue des meteors a tirer selon l'importance
+2 -
