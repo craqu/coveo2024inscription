@@ -1,1 +1,1 @@
-SMALL METEOR : score, speed, 
+SMALL METEOR : score : 60, size = 5
