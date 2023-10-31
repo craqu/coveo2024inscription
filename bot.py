@@ -49,7 +49,7 @@ class Bot:
         meteorlist = game_message.meteors
         print(meteorlist)
 
-    def get_shooting_rotation_angle(game_message, next_meteor):
+    def get_rotation_angle(self, game_message, curently_shot_meteor):
         cannon_position = Vector(game_message.cannon.position.x, -game_message.cannon.position.y)
         rocket_speed = game_message.constants.rockets.speed
         meteor_position = Vector(curently_shot_meteor.position.x, -curently_shot_meteor.position.y)
@@ -57,6 +57,8 @@ class Bot:
 
         shooting_angle = -self.get_shooting_angle(cannon_position, rocket_speed, meteor_position, meteor_velocity) 
         rotation_angle = degrees(shooting_angle) - game_message.cannon.orientation
+
+        return rotation_angle
 
     def get_next_move(self, game_message: GameMessage):
         # va chercher le prochain météor le plus petit sur la liste
@@ -64,27 +66,26 @@ class Bot:
         meteors = [x for x in game_message.meteors if x.id not in self.shooted]
         next_meteor = 0
         meteors.sort(key=lambda m: m.meteorType, reverse=True) # prend le plus petit meteor sur le jeux
-        try:
+
+        if meteors:
+            print("liste de meteor vide")
             curently_shot_meteor = meteors[next_meteor]
-        except:
+
+            rotation_angle = self.get_rotation_angle(game_message, curently_shot_meteor)
+            if abs(rotation_angle) > 180:
+                self.shooted.append(curently_shot_meteor.id)
+        else:
             return []
         
         # trouve l'angle et la rotation du canon pour shoot le meteor choisi
-        shooting_angle, rotation_angle = self.get_shooting_rotation_angle(game_message,next_meteor)
-        cannon_position = Vector(game_message.cannon.position.x, -game_message.cannon.position.y)
-        rocket_speed = game_message.constants.rockets.speed
-        meteor_position = Vector(curently_shot_meteor.position.x, -curently_shot_meteor.position.y)
-        meteor_velocity = Vector(curently_shot_meteor.velocity.x, -curently_shot_meteor.velocity.y)
-
-        shooting_angle = -self.get_shooting_angle(cannon_position, rocket_speed, meteor_position, meteor_velocity) 
-        rotation_angle = degrees(shooting_angle) - game_message.cannon.orientation
+        
 
 
         print(f"rotation angle asked = {rotation_angle}", file=fileout)
         print(game_message.tick, file=fileout)
         print(game_message.meteors, file=fileout)
         print(game_message.rockets, file=fileout)
-        print(meteor_velocity, file=fileout)
+        #print(meteor_velocity, file=fileout)
         print("", file=fileout)
         # tire le meteor
         if game_message.tick - self.last_shot_fired_tick > game_message.constants.cannonCooldownTicks:
@@ -95,6 +96,4 @@ class Bot:
                 ShootAction(),
             ]
         else:
-            return [
-                RotateAction(angle=rotation_angle)
-            ]
+            return []
